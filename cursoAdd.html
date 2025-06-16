@@ -28,8 +28,10 @@
 
         <button type="submit">Agregar Curso</button>
       </form>
+
       <ul>
-        <li><a href="cursos.html">⬅ Volver a Curos</a></li>
+        <li><a href="cursos.html">⬅ Volver a Cursos</a></li>
+        <li><a href="index.html">⬅ Volver al Menú</a></li>
       </ul>
     </div>
 
@@ -46,23 +48,28 @@
             sigla: document.getElementById("sigla").value,
             nombre: document.getElementById("nombre").value,
             profesor: document.getElementById("profesor").value,
-            cantidadEstudiantes: parseInt(
-              document.getElementById("cantidad").value
-            ),
+            cantidadEstudiantes: parseInt(document.getElementById("cantidad").value),
             aulaId: aulaId,
           };
 
-          const res = await fetch("http://localhost:5151/api/cursos", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(curso),
-          });
+          try {
+            const res = await fetch("http://www.lab3grima.somee.com/api/cursos", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(curso),
+            });
 
-          if (res.ok) {
-            alert("Curso agregado correctamente");
-            window.location.href = "cursos.html";
-          } else {
-            alert("Error al agregar curso");
+            if (res.ok) {
+              alert("Curso agregado correctamente");
+              window.location.href = "cursos.html";
+            } else {
+              const errorText = await res.text();
+              console.error("Respuesta del servidor:", errorText);
+              alert("Error al agregar curso");
+            }
+          } catch (error) {
+            console.error("Error en la solicitud:", error);
+            alert("No se pudo conectar al servidor.");
           }
         });
     </script>

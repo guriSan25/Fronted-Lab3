@@ -31,7 +31,7 @@
     </table>
 
     <script>
-      const baseUrl = "http://localhost:5151/api";
+      const baseUrl = "http://www.lab3grima.somee.com/api";
 
       async function loadCursos() {
         try {
@@ -40,7 +40,9 @@
             throw new Error(`HTTP error! status: ${res.status}`);
           }
           const cursos = await res.json();
-          const listaCursos = Array.isArray(cursos.$values) ? cursos.$values : [];
+          const listaCursos = Array.isArray(cursos.$values)
+            ? cursos.$values
+            : [];
 
           const tbody = document.querySelector("#cursos-table tbody");
           tbody.innerHTML = "";
@@ -48,14 +50,16 @@
           listaCursos.forEach((curso) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-              <td>${curso.id}</td>
-              <td>${curso.sigla || ""}</td>
-              <td>${curso.nombre || ""}</td>
-              <td>${curso.profesor || ""}</td>
-              <td>${curso.cantidadEstudiantes ?? 0}</td>
-              <td>${curso.aula ? curso.aula.nombre : "Sin asignar"}</td>
-              <td><button onclick="eliminarCurso(${curso.id})">🗑 Eliminar</button></td>
-            `;
+          <td>${curso.id}</td>
+          <td>${curso.sigla || ""}</td>
+          <td>${curso.nombre || ""}</td>
+          <td>${curso.profesor || ""}</td>
+          <td>${curso.cantidadEstudiantes ?? 0}</td>
+          <td>${curso.aula ? curso.aula.nombre : "Sin asignar"}</td>
+          <td><button onclick="eliminarCurso(${
+            curso.id
+          })">🗑 Eliminar</button></td>
+        `;
             tbody.appendChild(row);
           });
         } catch (error) {
@@ -65,7 +69,8 @@
       }
 
       async function eliminarCurso(id) {
-        if (!confirm("¿Estás seguro de que deseas eliminar este curso?")) return;
+        if (!confirm("¿Estás seguro de que deseas eliminar este curso?"))
+          return;
 
         try {
           const res = await fetch(`${baseUrl}/cursos/${id}`, {
@@ -73,11 +78,13 @@
           });
 
           if (!res.ok) {
-            throw new Error(`No se pudo eliminar el curso. Código: ${res.status}`);
+            throw new Error(
+              `No se pudo eliminar el curso. Código: ${res.status}`
+            );
           }
 
           alert("Curso eliminado correctamente.");
-          loadCursos(); 
+          loadCursos();
         } catch (error) {
           alert("Error al eliminar el curso. Revisa la consola.");
           console.error("Error eliminando curso:", error);

@@ -28,7 +28,7 @@
   </table>
 
   <script>
-    const baseUrl = 'http://localhost:5151/api';
+    const baseUrl = 'http://www.lab3grima.somee.com/api';
 
     async function loadCursosSinCupo() {
       try {
@@ -38,8 +38,6 @@
         }
         const data = await res.json();
 
-        console.log('Respuesta cursos sin cupo:', data);
-
         const lista = Array.isArray(data.$values) ? data.$values : [];
 
         const tbody = document.querySelector('#cursos-table tbody');
@@ -47,7 +45,7 @@
 
         if (lista.length === 0) {
           const tr = document.createElement('tr');
-          tr.innerHTML = '<td colspan="6">No hay cursos sin cupo.</td>';
+          tr.innerHTML = '<td colspan="5">No hay cursos sin cupo.</td>';
           tbody.appendChild(tr);
           return;
         }
