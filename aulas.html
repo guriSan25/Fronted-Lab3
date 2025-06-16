@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Aulas</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="aulas.css" />
+  </head>
+  <body>
+    <h1>Listado de Aulas</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">⬅ Volver al Menú</a></li>
+        <li><a href="aulaAdd.html">+ Agregar Aula</a></li>
+      </ul>
+    </nav>
+
+    <table id="aulas-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Ubicación</th>
+          <th>Capacidad</th>
+          <th>Cursos Asignados</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const baseUrl = "http://localhost:5151/api";
+
+      async function loadAulas() {
+        try {
+          const res = await fetch(`${baseUrl}/aulas`);
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const aulas = await res.json();
+          const listaAulas = Array.isArray(aulas.$values) ? aulas.$values : [];
+
+          const tbody = document.querySelector("#aulas-table tbody");
+          tbody.innerHTML = "";
+
+          listaAulas.forEach((aula) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${aula.id}</td>
+              <td>${aula.codigo || ""}</td>
+              <td>${aula.nombre || ""}</td>
+              <td>${aula.ubicacion || ""}</td>
+              <td>${aula.capacidad || ""}</td>
+              <td>${aula.cursos ? aula.cursos.length : 0}</td>
+              <td><button onclick="eliminarAula(${aula.id})">🗑 Eliminar</button></td>
+            `;
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          alert("No se pudieron cargar las aulas. Revisa la consola.");
+          console.error("Error cargando aulas:", error);
+        }
+      }
+
+      async function eliminarAula(id) {
+        if (!confirm("¿Estás seguro de que deseas eliminar esta aula?")) return;
+
+        try {
+          const res = await fetch(`${baseUrl}/aulas/${id}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            throw new Error(`No se pudo eliminar el aula. Código: ${res.status}`);
+          }
+
+          alert("Aula eliminada correctamente.");
+          loadAulas(); // Recargar tabla
+        } catch (error) {
+          alert("Error al eliminar el aula. Revisa la consola.");
+          console.error("Error eliminando aula:", error);
+        }
+      }
+
+      window.onload = loadAulas;
+    </script>
+  </body>
+</html>

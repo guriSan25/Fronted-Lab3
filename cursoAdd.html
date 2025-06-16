@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Agregar Curso</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="addC.css" />
+  </head>
+  <body>
+    <div class="card">
+      <form id="curso-form">
+        <h2>Agregar Curso</h2>
+
+        <label for="sigla">Sigla:</label>
+        <input type="text" id="sigla" required />
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required />
+
+        <label for="profesor">Profesor:</label>
+        <input type="text" id="profesor" />
+
+        <label for="cantidad">Cantidad Estudiantes:</label>
+        <input type="number" id="cantidad" required />
+
+        <label for="aula">Aula ID (opcional):</label>
+        <input type="number" id="aula" />
+
+        <button type="submit">Agregar Curso</button>
+      </form>
+      <ul>
+        <li><a href="cursos.html">⬅ Volver a Curos</a></li>
+      </ul>
+    </div>
+
+    <script>
+      document
+        .getElementById("curso-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const aulaValue = document.getElementById("aula").value;
+          const aulaId = aulaValue ? parseInt(aulaValue) : null;
+
+          const curso = {
+            sigla: document.getElementById("sigla").value,
+            nombre: document.getElementById("nombre").value,
+            profesor: document.getElementById("profesor").value,
+            cantidadEstudiantes: parseInt(
+              document.getElementById("cantidad").value
+            ),
+            aulaId: aulaId,
+          };
+
+          const res = await fetch("http://localhost:5151/api/cursos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(curso),
+          });
+
+          if (res.ok) {
+            alert("Curso agregado correctamente");
+            window.location.href = "cursos.html";
+          } else {
+            alert("Error al agregar curso");
+          }
+        });
+    </script>
+  </body>
+</html>

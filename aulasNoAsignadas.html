@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>🏫 Aulas Sin Cursos Asignados</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="aulasNo.css" />
+</head>
+<body>
+  <h1>🏫 Aulas Sin Cursos Asignados</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">⬅ Volver al Menú</a></li>
+    </ul>
+  </nav>
+
+  <table id="aulas-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Ubicación</th>
+        <th>Capacidad</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const baseUrl = 'http://localhost:5151/api';
+
+    async function loadAulasNoAsignadas() {
+      try {
+        const res = await fetch(`${baseUrl}/aulas/no-asignadas`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+
+        console.log('Respuesta aulas no asignadas:', data);
+
+        const lista = Array.isArray(data.$values) ? data.$values : [];
+
+        const tbody = document.querySelector('#aulas-table tbody');
+        tbody.innerHTML = ''; 
+
+        if (lista.length === 0) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td colspan="5">No hay aulas sin cursos asignados.</td>';
+          tbody.appendChild(tr);
+          return;
+        }
+
+        lista.forEach(aula => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${aula.id}</td>
+            <td>${aula.codigo || ''}</td>
+            <td>${aula.nombre || ''}</td>
+            <td>${aula.ubicacion || ''}</td>
+            <td>${aula.capacidad || ''}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        alert('No se pudieron cargar las aulas no asignadas. Revisa la consola.');
+        console.error('Error cargando aulas no asignadas:', error);
+      }
+    }
+
+    window.onload = loadAulasNoAsignadas;
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cursos Sin Cupo</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="cursosSin.css" />
+</head>
+<body>
+  <h1>🚫 Cursos Sin Cupo</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">⬅ Volver al Menú</a></li>
+    </ul>
+  </nav>
+
+  <table id="cursos-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Sigla</th>
+        <th>Nombre</th>
+        <th>Profesor</th>
+        <th>Estudiantes</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const baseUrl = 'http://localhost:5151/api';
+
+    async function loadCursosSinCupo() {
+      try {
+        const res = await fetch(`${baseUrl}/cursos/sin-cupo`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+
+        console.log('Respuesta cursos sin cupo:', data);
+
+        const lista = Array.isArray(data.$values) ? data.$values : [];
+
+        const tbody = document.querySelector('#cursos-table tbody');
+        tbody.innerHTML = ''; 
+
+        if (lista.length === 0) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td colspan="6">No hay cursos sin cupo.</td>';
+          tbody.appendChild(tr);
+          return;
+        }
+
+        lista.forEach(curso => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${curso.id}</td>
+            <td>${curso.sigla || ''}</td>
+            <td>${curso.nombre || ''}</td>
+            <td>${curso.profesor || ''}</td>
+            <td>${curso.cantidadEstudiantes ?? 0}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        alert('No se pudieron cargar los cursos sin cupo. Revisa la consola.');
+        console.error('Error cargando cursos sin cupo:', error);
+      }
+    }
+
+    window.onload = loadCursosSinCupo;
+  </script>
+</body>
+</html>

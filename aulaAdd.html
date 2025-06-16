@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Agregar Aula</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="addA.css" />
+  </head>
+  <body>
+     
+    <div class="card">
+      <form id="aula-form">
+        <h2>Agregar Aula</h2>
+
+        <label for="codigo">Código:</label>
+        <input type="text" id="codigo" required />
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required />
+
+        <label for="ubicacion">Ubicación:</label>
+        <input type="text" id="ubicacion" />
+
+        <label for="capacidad">Capacidad:</label>
+        <input type="number" id="capacidad" required />
+
+        <button type="submit">Agregar Aula</button>
+      </form>
+      <ul>
+        <li><a href="aulas.html">⬅ Volver a Aulas</a></li>
+         <li><a href="index.html">⬅ Volver al Menú</a></li>
+      </ul>
+    </div>
+
+    <script>
+      document
+        .getElementById("aula-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const aula = {
+            codigo: document.getElementById("codigo").value,
+            nombre: document.getElementById("nombre").value,
+            ubicacion: document.getElementById("ubicacion").value,
+            capacidad: parseInt(document.getElementById("capacidad").value),
+          };
+
+          const res = await fetch("http://localhost:5151/api/aulas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(aula),
+          });
+
+          if (res.ok) {
+            alert("Aula agregada correctamente");
+            window.location.href = "aulas.html";
+          } else {
+            alert("Error al agregar aula");
+          }
+        });
+    </script>
+  </body>
+</html>

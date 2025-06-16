@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cursos</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="cursos.css" />
+  </head>
+  <body>
+    <h1>Listado de Cursos</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">⬅ Volver al Menú</a></li>
+        <li><a href="cursoAdd.html">+ Agregar Curso</a></li>
+      </ul>
+    </nav>
+
+    <table id="cursos-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Sigla</th>
+          <th>Nombre</th>
+          <th>Profesor</th>
+          <th>Estudiantes</th>
+          <th>Aula</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const baseUrl = "http://localhost:5151/api";
+
+      async function loadCursos() {
+        try {
+          const res = await fetch(`${baseUrl}/cursos`);
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const cursos = await res.json();
+          const listaCursos = Array.isArray(cursos.$values) ? cursos.$values : [];
+
+          const tbody = document.querySelector("#cursos-table tbody");
+          tbody.innerHTML = "";
+
+          listaCursos.forEach((curso) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${curso.id}</td>
+              <td>${curso.sigla || ""}</td>
+              <td>${curso.nombre || ""}</td>
+              <td>${curso.profesor || ""}</td>
+              <td>${curso.cantidadEstudiantes ?? 0}</td>
+              <td>${curso.aula ? curso.aula.nombre : "Sin asignar"}</td>
+              <td><button onclick="eliminarCurso(${curso.id})">🗑 Eliminar</button></td>
+            `;
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          alert("No se pudieron cargar los cursos. Revisa la consola.");
+          console.error("Error cargando cursos:", error);
+        }
+      }
+
+      async function eliminarCurso(id) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este curso?")) return;
+
+        try {
+          const res = await fetch(`${baseUrl}/cursos/${id}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            throw new Error(`No se pudo eliminar el curso. Código: ${res.status}`);
+          }
+
+          alert("Curso eliminado correctamente.");
+          loadCursos(); 
+        } catch (error) {
+          alert("Error al eliminar el curso. Revisa la consola.");
+          console.error("Error eliminando curso:", error);
+        }
+      }
+
+      window.onload = loadCursos;
+    </script>
+  </body>
+</html>
