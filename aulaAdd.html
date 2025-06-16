@@ -43,7 +43,7 @@
         };
 
         try {
-          const res = await fetch("http://www.lab3grima.somee.com/api/aulas", {
+          const res = await fetch("https://cors-anywhere.herokuapp.com/http://www.lab3grima.somee.com/api/aulas", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(aula),
